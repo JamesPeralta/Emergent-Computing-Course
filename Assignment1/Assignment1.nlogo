@@ -4,6 +4,7 @@ breed [wasps wasp]
 ;; Green: 55: Empty Field
 breed [bluemats bluemat] ;; Blue: 105: Material 1
 breed [redmats redmat] ;; Red: 15: Material 2
+breed [yellowmats yellowmat] ;; Yellow: 45: Material 3
 
 ;;--------Variables----------------
 wasps-own
@@ -18,6 +19,7 @@ to setup
   setup-patches
   spawn-bluematerials
   spawn-redmaterials
+  spawn-yellowmaterials
   setup-wasps
   setup-nest
 end
@@ -31,10 +33,10 @@ to setup-wasps
   create-wasps numberOfWasps
   ask wasps [
     setxy random-xcor random-ycor
-    set size 2
+    set size 1
     set carried-material False
     set carried-material-type Nobody
-    set color yellow
+    set color pink
   ]
 end
 
@@ -60,6 +62,17 @@ to spawn-redmaterials
   ]
 end
 
+to spawn-yellowmaterials
+  set-default-shape yellowmats "box"
+  create-yellowmats ((count patches) * (yellowDensity / 100))
+  ask yellowmats
+  [
+    setxy random-xcor random-ycor
+    set size 2
+    set color yellow
+  ]
+end
+
 to setup-nest
   ask patches
   [ if random-float 100 < 0.5
@@ -71,10 +84,13 @@ to setup-nest
 end
 
 to go
-  move-wasps
   search-for-material
+  move-wasps
   plant-material
+  respawn-material
+end
 
+to respawn-material
   if count redmats = 0
   [
     spawn-redmaterials
@@ -82,6 +98,10 @@ to go
   if count bluemats = 0
   [
     spawn-bluematerials
+  ]
+  if count yellowmats = 0
+  [
+    spawn-yellowmaterials
   ]
 end
 
@@ -120,6 +140,10 @@ to search-for-material ;; wasps procedure
     [
       set possiblemat one-of redmats-here
     ]
+    if possiblemat = nobody
+    [
+      set possiblemat one-of yellowmats-here
+    ]
 
     if possiblemat != nobody and carried-material = False
     [
@@ -128,25 +152,34 @@ to search-for-material ;; wasps procedure
       let mattype nobody
       ask possiblemat [
         let mattie breed
-        ifelse mattie = bluemats
-        [
-          set mattype "blue"
+        (ifelse
+          mattie = bluemats [
+            set mattype "blue"
         ]
-        [
-          set mattype "red"
+          mattie = redmats[
+            set mattype "red"
         ]
+        ; Else command
+        [
+            set mattype "yellow"
+        ])
       ]
       ;; Set yourself to the color of mattype you have
       ;; and
-      ifelse mattype = "blue"
-      [
-        set color blue
-        set carried-material-type 105
-      ]
-      [
-        set color red
-        set carried-material-type 15
-      ]
+
+      (ifelse
+        mattype = "blue" [
+          set color blue
+          set carried-material-type 105
+       ]
+        mattype = "red" [
+          set color red
+          set carried-material-type 15
+       ]
+       [
+          set color yellow
+          set carried-material-type 45
+       ])
 
       ask possiblemat [die]
     ]
@@ -158,6 +191,8 @@ to plant-material
   ;; Green: 55: Empty Field: 0
   ;; Blue: 105: Material 1: 1
   ;; Red: 15: Material 2: 2
+  ;; Yellow: 45: Material 3
+
   ; seed: 1
   let vespa-ruleset
   (list
@@ -214,7 +249,16 @@ to plant-material
     (list (list 55 55 55 15 15 15 15 15) 15))
 
   ; Custom seed 1
+  let mosiac-ruleset
+  (list
+    (list (list 105 55 55 55 55 55 55 55) 15)
+    (list (list 15 55 55 55 15 55 55 55) 105)
+    (list (list 15 55 105 55 15 55 105 55) 45)
+    (list (list 105 55 15 55 105 55 15 55) 45)
+  )
+
   ; Custom seed 2
+  ; Custom seed 3
 
   ; Choose which ruleset to use based on the dropdown
   let chosenRuleset Nobody
@@ -228,6 +272,9 @@ to plant-material
     ruleSet = "parachartergus-ruleset" [
       set chosenRuleset convert-ruleset-to-symmetric parachartergus-ruleset
     ]
+    ruleSet = "mosiac-ruleset" [
+      set chosenRuleset convert-ruleset-to-symmetric mosiac-ruleset
+    ]
     ;; elsecommands
     [
       print "Nothing chosen"
@@ -236,6 +283,7 @@ to plant-material
   ;; Iterate through the ruleset and look for a matching neighbors configuration
   ask wasps [
     ;; Get neighbors of the wasp
+    set heading 0
     let neighborpatches [pcolor] of neighbors
 
     ;; Look through all of the of the rules and see if it
@@ -255,7 +303,7 @@ to plant-material
         set pcolor material_to_plant
         ;; Reset the wasp
         set carried-material False
-        set color yellow
+        set color pink
         set carried-material-type Nobody
         set ruleFound True
       ]
@@ -265,6 +313,14 @@ to plant-material
     ]
   ]
 
+end
+
+;; --------- Finishing Functions -------
+to kill-agents
+  ask turtles
+  [
+    die
+  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -312,9 +368,9 @@ NIL
 1
 
 BUTTON
-100
+106
 43
-185
+191
 76
 Go
 go
@@ -329,10 +385,10 @@ NIL
 1
 
 MONITOR
-19
-300
-106
-345
+6
+341
+93
+386
 Wasp Count
 count wasps
 0
@@ -340,10 +396,10 @@ count wasps
 11
 
 MONITOR
-18
-353
-191
-398
+6
+391
+198
+436
 Blue Material Count
 count bluemats
 17
@@ -351,10 +407,10 @@ count bluemats
 11
 
 MONITOR
-18
-405
-189
-450
+6
+440
+199
+485
 Red Material Count
 count redmats
 17
@@ -362,10 +418,10 @@ count redmats
 11
 
 TEXTBOX
-65
-276
-143
-297
+66
+316
+144
+337
 Monitors
 17
 0.0
@@ -374,38 +430,38 @@ Monitors
 SLIDER
 11
 144
-187
+186
 177
 blueDensity
 blueDensity
 0
 100
-0.0
+4.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-10
-186
-188
-219
+11
+182
+187
+215
 redDensity
 redDensity
 0
 100
-7.0
+6.0
 1
 1
 NIL
 HORIZONTAL
 
 MONITOR
-19
-456
-189
-501
+98
+341
+200
+386
 Empty space left
 count patches with [pcolor = green]
 17
@@ -413,9 +469,9 @@ count patches with [pcolor = green]
 11
 
 INPUTBOX
-10
+7
 81
-186
+101
 141
 numberOfWasps
 500.0
@@ -424,13 +480,13 @@ numberOfWasps
 Number
 
 CHOOSER
-9
-224
-189
-269
+10
+265
+190
+310
 ruleSet
 ruleSet
-"vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset"
+"vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset"
 2
 
 TEXTBOX
@@ -441,6 +497,49 @@ TEXTBOX
 Arena Configs
 17
 0.0
+1
+
+SLIDER
+10
+223
+189
+256
+yellowDensity
+yellowDensity
+0
+100
+0.0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+6
+490
+198
+535
+Yellow Material Count
+count yellowmats
+17
+1
+11
+
+BUTTON
+107
+85
+191
+137
+Equilibrium !
+kill-agents
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
