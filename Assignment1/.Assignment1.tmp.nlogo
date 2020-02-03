@@ -164,11 +164,11 @@ to plant-material
     (list (list 105 55 55 55 55 55 55 55) 15)
     (list (list 105 15 55 55 55 55 55 55) 15)
     (list (list 105 55 55 55 55 55 55 15) 15)
-    (list (list 15 55 55 55 55 55 15 1) 15)
+    (list (list 15 55 55 55 55 55 15 15) 15)
     (list (list 55 55 55 55 15 105 15 55) 15)
     (list (list 15 55 55 55 55 55 105 15) 15)
     (list (list 55 55 55 55 15 15 105 55) 15)
-    (list (list 15 55 55 55 55 55 15 1) 15)
+    (list (list 15 55 55 55 55 55 15 15) 15)
     (list (list 105 15 55 55 55 55 55 15) 15)
     (list (list 15 15 55 55 55 55 55 15) 15)
     (list (list 15 15 55 55 55 15 15 15) 15)
@@ -176,9 +176,9 @@ to plant-material
     (list (list 15 15 15 55 55 55 15 15) 15)
     (list (list 105 15 15 55 55 55 15 15) 15)
     (list (list 15 15 15 15 55 15 15 15) 15)
-    (list (list 15 55 55 55 55 15 15 1) 15)
-    (list (list 15 15 55 55 55 55 15 1) 15)
-    (list (list 15 15 55 55 55 15 15 1) 15))
+    (list (list 15 55 55 55 55 15 15 15) 15)
+    (list (list 15 15 55 55 55 55 15 15) 15)
+    (list (list 15 15 55 55 55 15 15 15) 15))
 
   ; seed: 2
   let vespula-ruleset
@@ -196,14 +196,14 @@ to plant-material
   let parachartergus-ruleset
   (list
     (list (list 55 55 55 55 55 55 105 55) 15)
-    (list (list 15 55 55 55 55 55 55 1) 15)
+    (list (list 15 55 55 55 55 55 55 15) 15)
     (list (list 55 55 55 55 15 105 55 55) 15)
     (list (list 55 55 55 55 55 15 15 15) 15)
     (list (list 55 55 55 55 15 15 15 55) 15)
     (list (list 15 55 55 55 55 55 15 15) 15)
     (list (list 15 15 55 55 55 55 55 15) 15)
     (list (list 55 55 55 15 15 15 55 55) 15)
-    (list (list 15 55 55 55 55 55 55 1) 15)
+    (list (list 15 55 55 55 55 55 55 15) 15)
     (list (list 15 55 55 55 55 15 15 15) 15)
     (list (list 15 15 15 15 55 55 55 55) 15)
     (list (list 15 15 15 55 55 55 15 15) 15)
@@ -230,7 +230,7 @@ to plant-material
     ]
     ;; elsecommands
     [
-      print "Nothing chos"
+      print "Nothing chosen"
    ])
 
   ;; Iterate through the ruleset and look for a matching neighbors configuration
@@ -241,11 +241,15 @@ to plant-material
     ;; Look through all of the of the rules and see if it
     ;; matches my current surroundings
     let rulefound False
-    foreach convert-ruleset-to-symmetric parachartergus-ruleset
+    let convertedRuleset convert-ruleset-to-symmetric chosenRuleset
+    let i 0
+    let listLength length convertedRuleset
+    while [ruleFound = False and i < listLength]
     [
-      x ->
-      let rulesetToCheck item 0 x
-      let material_to_plant item 1 x
+      let currentRulset item i
+      let rulesetToCheck item 0 currentRulset
+      let material_to_plant item 1 currentRulset
+
       if rulesetToCheck = neighborpatches and material_to_plant = carried-material-type and pcolor = green
       [
         ;; Put down the material
@@ -254,7 +258,11 @@ to plant-material
         set carried-material False
         set color yellow
         set carried-material-type Nobody
+        set ruleFound True
       ]
+
+      ;; increment the index
+      set i (i + 1)
     ]
   ]
 
@@ -388,7 +396,7 @@ redDensity
 redDensity
 0
 100
-4.0
+7.0
 1
 1
 NIL
@@ -411,7 +419,7 @@ INPUTBOX
 186
 141
 numberOfWasps
-2.0
+500.0
 1
 0
 Number
