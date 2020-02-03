@@ -16,7 +16,8 @@ wasps-own
 to setup
   clear-all
   setup-patches
-  setup-materials
+  spawn-bluematerials
+  spawn-redmaterials
   setup-wasps
   setup-nest
 end
@@ -27,7 +28,7 @@ end
 
 to setup-wasps
   set-default-shape wasps "bug"
-  create-wasps 100
+  create-wasps numberOfWasps
   ask wasps [
     setxy random-xcor random-ycor
     set size 2
@@ -37,17 +38,22 @@ to setup-wasps
   ]
 end
 
-to setup-materials
+to spawn-bluematerials
   set-default-shape bluemats "box"
-  ;create-bluemats 15
-  ask bluemats [
+  create-bluemats ((count patches) * (blueDensity / 100))
+  ask bluemats
+  [
     setxy random-xcor random-ycor
     set size 2
     set color blue
   ]
+end
+
+to spawn-redmaterials
   set-default-shape redmats "box"
-  create-redmats 100
-  ask redmats [
+  create-redmats ((count patches) * (redDensity / 100))
+  ask redmats
+  [
     setxy random-xcor random-ycor
     set size 2
     set color red
@@ -71,7 +77,11 @@ to go
 
   if count redmats = 0
   [
-    setup-materials
+    spawn-redmaterials
+  ]
+  if count bluemats = 0
+  [
+    spawn-bluematerials
   ]
 end
 
@@ -203,6 +213,25 @@ to plant-material
     (list (list 55 55 15 15 15 55 55 55) 15)
     (list (list 55 55 55 15 15 15 15 15) 15))
 
+  ; Custom seed 1
+  ; Custom seed 2
+
+  ; Choose which ruleset to use based on the dropdown
+  let chosenRuleset Nobody
+  (ifelse
+    ruleSet = "vespa-ruleset" [
+      set chosenRuleset vespa-ruleset
+    ]
+    ruleSet = "vespula-ruleset" [
+      set chosenRuleset vespula-ruleset
+    ]
+    ruleSet = "parachartergus-ruleset" [
+      set chosenRuleset parachartergus-ruleset
+    ]
+    ;; elsecommands
+    [
+      print "Nothing chos"
+   ])
 
   ;; Iterate through the ruleset and look for a matching neighbors configuration
   ask wasps [
@@ -211,12 +240,13 @@ to plant-material
 
     ;; Look through all of the of the rules and see if it
     ;; matches my current surroundings
+    let rulefound False
     foreach convert-ruleset-to-symmetric parachartergus-ruleset
     [
       x ->
-      let ruleset item 0 x
+      let rulesetToCheck item 0 x
       let material_to_plant item 1 x
-      if ruleset = neighborpatches and material_to_plant = carried-material-type and pcolor = green
+      if rulesetToCheck = neighborpatches and material_to_plant = carried-material-type and pcolor = green
       [
         ;; Put down the material
         set pcolor material_to_plant
@@ -233,7 +263,7 @@ end
 GRAPHICS-WINDOW
 210
 10
-907
+1271
 448
 -1
 -1
@@ -247,8 +277,8 @@ GRAPHICS-WINDOW
 1
 1
 1
--26
-26
+-40
+40
 -16
 16
 0
@@ -258,10 +288,10 @@ ticks
 30.0
 
 BUTTON
-12
-24
-98
-57
+10
+43
+96
+76
 Setup
 setup
 NIL
@@ -275,10 +305,10 @@ NIL
 1
 
 BUTTON
-102
-24
-187
-57
+100
+43
+185
+76
 Go
 go
 T
@@ -292,10 +322,10 @@ NIL
 1
 
 MONITOR
-12
-62
-99
-107
+19
+300
+106
+345
 Wasp Count
 count wasps
 0
@@ -303,10 +333,10 @@ count wasps
 11
 
 MONITOR
-13
-114
-186
-159
+18
+353
+191
+398
 Blue Material Count
 count bluemats
 17
@@ -314,15 +344,97 @@ count bluemats
 11
 
 MONITOR
-13
-169
-184
-214
+18
+405
+189
+450
 Red Material Count
 count redmats
 17
 1
 11
+
+TEXTBOX
+65
+276
+143
+297
+Monitors
+17
+0.0
+1
+
+SLIDER
+11
+144
+187
+177
+blueDensity
+blueDensity
+0
+100
+0.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+10
+186
+188
+219
+redDensity
+redDensity
+0
+100
+4.0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+19
+456
+189
+501
+Empty space left
+count patches with [pcolor = green]
+17
+1
+11
+
+INPUTBOX
+10
+81
+186
+141
+numberOfWasps
+2.0
+1
+0
+Number
+
+CHOOSER
+9
+224
+189
+269
+ruleSet
+ruleSet
+"vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset"
+0
+
+TEXTBOX
+43
+13
+193
+34
+Arena Configs
+17
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
