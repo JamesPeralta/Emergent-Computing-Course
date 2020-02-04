@@ -436,7 +436,7 @@ blueDensity
 blueDensity
 0
 100
-4.0
+0.0
 1
 1
 NIL
@@ -451,7 +451,7 @@ redDensity
 redDensity
 0
 100
-6.0
+3.0
 1
 1
 NIL
@@ -487,7 +487,7 @@ CHOOSER
 ruleSet
 ruleSet
 "vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset"
-2
+1
 
 TEXTBOX
 43
