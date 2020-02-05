@@ -86,11 +86,11 @@ to plant-material
     (list (list 105 55 55 55 55 55 55 55) 15)
     (list (list 105 15 55 55 55 55 55 55) 15)
     (list (list 105 55 55 55 55 55 55 15) 15)
-    (list (list 15 55 55 55 55 55 15 15) 15)
+    (list (list 15 55 55 55 55 55 15 105) 15)
     (list (list 55 55 55 55 15 105 15 55) 15)
     (list (list 15 55 55 55 55 55 105 15) 15)
     (list (list 55 55 55 55 15 15 105 55) 15)
-    (list (list 15 55 55 55 55 55 15 15) 15)
+    (list (list 15 55 55 55 55 55 15 105) 15)
     (list (list 105 15 55 55 55 55 55 15) 15)
     (list (list 15 15 55 55 55 55 55 15) 15)
     (list (list 15 15 55 55 55 15 15 15) 15)
@@ -118,14 +118,14 @@ to plant-material
   let parachartergus-ruleset
   (list
     (list (list 55 55 55 55 55 55 105 55) 15)
-    (list (list 15 55 55 55 55 55 55 15) 15)
+    (list (list 15 55 55 55 55 55 55 105) 15)
     (list (list 55 55 55 55 15 105 55 55) 15)
     (list (list 55 55 55 55 55 15 15 15) 15)
     (list (list 55 55 55 55 15 15 15 55) 15)
     (list (list 15 55 55 55 55 55 15 15) 15)
     (list (list 15 15 55 55 55 55 55 15) 15)
     (list (list 55 55 55 15 15 15 55 55) 15)
-    (list (list 15 55 55 55 55 55 55 15) 15)
+    (list (list 15 55 55 55 55 55 55 105) 15)
     (list (list 15 55 55 55 55 15 15 15) 15)
     (list (list 15 15 15 15 55 55 55 55) 15)
     (list (list 15 15 15 55 55 55 15 15) 15)
@@ -284,7 +284,7 @@ blueDensity
 blueDensity
 0
 5
-1.0
+0.2
 0.1
 1
 NIL
@@ -298,9 +298,9 @@ SLIDER
 redDensity
 redDensity
 0
-20
-1.0
-1
+5
+0.2
+0.1
 1
 NIL
 HORIZONTAL
@@ -311,7 +311,7 @@ INPUTBOX
 189
 140
 numberOfWasps
-1000.0
+100.0
 1
 0
 Number
@@ -324,7 +324,7 @@ CHOOSER
 ruleSet
 ruleSet
 "vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset"
-3
+2
 
 TEXTBOX
 43
@@ -344,9 +344,9 @@ SLIDER
 yellowDensity
 yellowDensity
 0
-20
-1.0
-1
+5
+0.0
+0.1
 1
 NIL
 HORIZONTAL

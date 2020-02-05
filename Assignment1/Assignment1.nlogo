@@ -86,11 +86,11 @@ to plant-material
     (list (list 105 55 55 55 55 55 55 55) 15)
     (list (list 105 15 55 55 55 55 55 55) 15)
     (list (list 105 55 55 55 55 55 55 15) 15)
-    (list (list 15 55 55 55 55 55 15 15) 15)
+    (list (list 15 55 55 55 55 55 15 105) 15)
     (list (list 55 55 55 55 15 105 15 55) 15)
     (list (list 15 55 55 55 55 55 105 15) 15)
     (list (list 55 55 55 55 15 15 105 55) 15)
-    (list (list 15 55 55 55 55 55 15 15) 15)
+    (list (list 15 55 55 55 55 55 15 105) 15)
     (list (list 105 15 55 55 55 55 55 15) 15)
     (list (list 15 15 55 55 55 55 55 15) 15)
     (list (list 15 15 55 55 55 15 15 15) 15)
@@ -98,9 +98,9 @@ to plant-material
     (list (list 15 15 15 55 55 55 15 15) 15)
     (list (list 105 15 15 55 55 55 15 15) 15)
     (list (list 15 15 15 15 55 15 15 15) 15)
-    (list (list 15 55 55 55 55 15 15 15) 15)
-    (list (list 15 15 55 55 55 55 15 15) 15)
-    (list (list 15 15 55 55 55 15 15 15) 15))
+    (list (list 15 55 55 55 55 15 15 105) 15)
+    (list (list 15 15 55 55 55 55 15 105) 15)
+    (list (list 15 15 55 55 55 15 15 105) 15))
 
   ; seed: 2
   let vespula-ruleset
@@ -118,14 +118,14 @@ to plant-material
   let parachartergus-ruleset
   (list
     (list (list 55 55 55 55 55 55 105 55) 15)
-    (list (list 15 55 55 55 55 55 55 15) 15)
+    (list (list 15 55 55 55 55 55 55 105) 15)
     (list (list 55 55 55 55 15 105 55 55) 15)
     (list (list 55 55 55 55 55 15 15 15) 15)
     (list (list 55 55 55 55 15 15 15 55) 15)
     (list (list 15 55 55 55 55 55 15 15) 15)
     (list (list 15 15 55 55 55 55 55 15) 15)
     (list (list 55 55 55 15 15 15 55 55) 15)
-    (list (list 15 55 55 55 55 55 55 15) 15)
+    (list (list 15 55 55 55 55 55 55 105) 15)
     (list (list 15 55 55 55 55 15 15 15) 15)
     (list (list 15 15 15 15 55 55 55 55) 15)
     (list (list 15 15 15 55 55 55 15 15) 15)
@@ -284,7 +284,7 @@ blueDensity
 blueDensity
 0
 5
-0.2
+0.1
 0.1
 1
 NIL
@@ -299,7 +299,7 @@ redDensity
 redDensity
 0
 5
-0.2
+0.1
 0.1
 1
 NIL
@@ -311,7 +311,7 @@ INPUTBOX
 189
 140
 numberOfWasps
-100.0
+38.0
 1
 0
 Number
@@ -324,7 +324,7 @@ CHOOSER
 ruleSet
 ruleSet
 "vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset"
-1
+2
 
 TEXTBOX
 43
