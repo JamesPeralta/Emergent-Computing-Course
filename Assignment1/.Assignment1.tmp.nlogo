@@ -284,7 +284,7 @@ blueDensity
 blueDensity
 0
 5
-0.2
+1.0
 0.1
 1
 NIL
@@ -298,9 +298,9 @@ SLIDER
 redDensity
 redDensity
 0
-5
-0.2
-0.1
+20
+1.0
+1
 1
 NIL
 HORIZONTAL
@@ -311,7 +311,7 @@ INPUTBOX
 189
 140
 numberOfWasps
-100.0
+1000.0
 1
 0
 Number
@@ -324,7 +324,7 @@ CHOOSER
 ruleSet
 ruleSet
 "vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset"
-1
+3
 
 TEXTBOX
 43
@@ -344,9 +344,9 @@ SLIDER
 yellowDensity
 yellowDensity
 0
-5
-0.0
-0.1
+20
+1.0
+1
 1
 NIL
 HORIZONTAL
