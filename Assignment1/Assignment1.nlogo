@@ -178,7 +178,7 @@ to plant-material
   )
 
   ; Custom seed 2
-  let poppy-field-ruleset
+  let sunflower-field-ruleset
   (list
     (list (list 105 55 55 55 55 55 55 55) 45)
     (list (list 105 45 55 55 55 55 55 45) 45)
@@ -240,8 +240,8 @@ to plant-material
     ruleSet = "mosiac-ruleset" [
       set chosenRuleset mosiac-ruleset
     ]
-    ruleSet = "poppy-field-ruleset" [
-      set chosenRuleset convert-ruleset-to-symmetric poppy-field-ruleset
+    ruleSet = "sunflower-field-ruleset" [
+      set chosenRuleset convert-ruleset-to-symmetric sunflower-field-ruleset
     ]
     ruleSet = "lakes-ruleset" [
       set chosenRuleset convert-ruleset-to-symmetric lakes-ruleset
@@ -282,10 +282,10 @@ to plant-material
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-623
-424
+239
+21
+652
+435
 -1
 -1
 5.0
@@ -390,8 +390,8 @@ CHOOSER
 310
 ruleSet
 ruleSet
-"vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset" "poppy-field-ruleset" "lakes-ruleset"
-5
+"vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset" "sunflower-field-ruleset" "lakes-ruleset"
+0
 
 TEXTBOX
 43
@@ -419,41 +419,23 @@ NIL
 HORIZONTAL
 
 @#$#@#$#@
-## WHAT IS IT?
+## How to run
+1. Set how large you would like your swarm to be using the numberOfWasps input box.
+2. The density sliders are used to control the amount of initial material the world will contain. The slider will allow up to 5% which means 5% of the patches in the world will be of that colour.
+3. Choose the ruleset, each ruleset will produce a different wasp nest.
+4. Click the Setup button to initialize the world.
+5. Click the run button to begin the simulation.
 
-(a general understanding of what the model is trying to show or explain)
+## Modeling Choices
 
-## HOW IT WORKS
+## Mosiac Ruleset
+The mosiac ruleset is inspired by mosiac art. Similiar to mosiac art, you can see that the wasps were able to build a colourful structure using all three materials. I wanted to intertwine the blue and the reds so I made all reds build horizontally and blues build vertical. The final touches are the yellow lines that are sprinkled throughout the nest.
 
-(what rules the agents use to create the overall behavior of the model)
+## Sunflower Field Ruleset
+The Sunflower Field ruleset builds exactly what you think it does, a sunflower field. It builds a nest that is very sparse and scatters the yellow materials evenly throughout the whole field. I came across this structure when I was attempting to build a snowflake and when I was three rules in, I ran the code and got this cool looking wasp nest appeared so I just left it.
 
-## HOW TO USE IT
-
-(how to use the model, including a description of each of the items in the Interface tab)
-
-## THINGS TO NOTICE
-
-(suggested things for the user to notice while running the model)
-
-## THINGS TO TRY
-
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
-
-## EXTENDING THE MODEL
-
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
-
-## NETLOGO FEATURES
-
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
-
-## RELATED MODELS
-
-(models in the NetLogo Models Library and elsewhere which are of related interest)
-
-## CREDITS AND REFERENCES
-
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+## Lakes Ruleset
+The lakes ruleset builds very dense structures around the blue materials which reminds me of a lake. To get the best results out of this ruleset use 0.3 density on the red and blue material and 0 on the yellow. It builds mazes using the red material which will allow the wasps to maneuver and builds very dense blue areas which could be the swimming pool for wasps.
 @#$#@#$#@
 default
 true
