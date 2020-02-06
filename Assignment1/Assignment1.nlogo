@@ -65,6 +65,21 @@ to-report convert-ruleset-to-symmetric [asymruleset]
   report symruleset
 end
 
+to-report get-nieghbors
+  ;; Get neighbors of the wasp
+  let neighbor0 [pcolor] of patch-at 0 1
+  let neighbor1 [pcolor] of patch-at 1 1
+  let neighbor2 [pcolor] of patch-at 1 0
+  let neighbor3 [pcolor] of patch-at 1 -1
+  let neighbor4 [pcolor] of patch-at 0 -1
+  let neighbor5 [pcolor] of patch-at -1 -1
+  let neighbor6 [pcolor] of patch-at -1 0
+  let neighbor7 [pcolor] of patch-at -1 1
+
+  let neighborpatches (list neighbor0 neighbor1 neighbor2 neighbor3 neighbor4 neighbor5 neighbor6 neighbor7)
+  report neighborpatches
+end
+
 ;;--------Wasps actions----------
 to move-wasps
   ask wasps [
@@ -138,14 +153,77 @@ to plant-material
   ; Custom seed 1
   let mosiac-ruleset
   (list
-    (list (list 105 55 55 55 55 55 55 55) 15)
-    (list (list 15 55 55 55 15 55 55 55) 105)
-    (list (list 15 55 105 55 15 55 105 55) 45)
-    (list (list 105 55 15 55 105 55 15 55) 45)
+    (list (list 15 55 55 55 55 55 55 55) 105)
+    (list (list 55 55 55 55 15 55 55 55) 105)
+    (list (list 55 55 55 55 105 55 55 55) 105)
+    (list (list 15 15 55 55 55 55 55 15) 105)
+    (list (list 55 55 55 15 15 15 55 55) 105)
+    (list (list 105 105 55 55 55 55 55 105) 105)
+    (list (list 55 55 55 105 105 105 55 55) 105)
+    (list (list 55 55 55 55 55 55 15 55) 15)
+    (list (list 55 55 55 55 55 55 105 55) 15)
+    (list (list 55 55 15 55 55 55 55 55) 15)
+    (list (list 55 55 105 55 55 55 55 55) 15)
+    (list (list 55 55 55 55 55 15 15 15) 15)
+    (list (list 55 15 15 15 55 55 55 55) 15)
+    (list (list 55 55 55 55 55 105 105 105) 15)
+    (list (list 55 105 105 105 55 55 55 55) 15)
+    (list (list 55 105 105 105 55 105 105 105) 45)
+    (list (list 45 105 105 105 45 105 105 105) 45)
+    (list (list 15 15 55 15 15 15 55 15) 45)
+    (list (list 15 15 45 15 15 15 45 15) 45)
+    (list (list 15 55 55 55 55 55 55 55) 45)
+    (list (list 15 15 55 55 55 55 55 55) 45)
+    (list (list 15 55 55 55 55 55 55 15) 45)
   )
 
   ; Custom seed 2
+  let poppy-field-ruleset
+  (list
+    (list (list 105 55 55 55 55 55 55 55) 45)
+    (list (list 105 45 55 55 55 55 55 45) 45)
+    (list (list 55 45 55 55 55 55 55 55) 105)
+  )
+
   ; Custom seed 3
+  let lakes-ruleset
+  (list
+    (list (list 105 55 55 55 55 55 55 55) 105)
+    (list (list 105 105 55 55 55 55 55 55) 105)
+    (list (list 105 55 55 55 55 55 55 105) 105)
+    (list (list 105 55 55 55 55 55 105 105) 105)
+    (list (list 15 55 55 55 55 55 105 105) 105)
+    (list (list 105 105 105 55 55 55 105 105) 105)
+    (list (list 105 105 105 105 55 105 105 105) 105)
+    (list (list 105 55 55 55 55 105 105 105) 105)
+    (list (list 105 105 55 55 55 105 105 105) 105)
+    (list (list 105 105 55 105 105 105 55 105) 105)
+    (list (list 105 105 105 105 105 105 105 105) 105)
+    (list (list 55 55 55 105 105 105 105 105) 105)
+    (list (list 55 55 105 105 105 105 105 55) 105)
+    (list (list 55 55 55 105 105 105 105 55) 105)
+    (list (list 55 55 105 105 105 105 55 55) 105)
+    (list (list 55 105 55 105 105 105 105 105) 105)
+    (list (list 105 105 105 55 105 105 105 105) 105)
+    (list (list 105 105 105 55 55 105 55 105) 105)
+    (list (list 105 55 105 105 105 55 105 105) 105)
+    (list (list 105 105 105 55 55 55 55 105) 105)
+    (list (list 105 105 55 105 55 105 105 55) 105)
+    (list (list 105 105 105 105 55 105 55 55) 105)
+    (list (list 55 55 105 55 55 55 105 55) 105)
+    (list (list 15 55 55 55 55 55 55 55) 15)
+    (list (list 15 15 55 55 55 55 55 55) 15)
+    (list (list 15 55 55 55 55 55 55 15) 15)
+    (list (list 15 55 55 55 55 55 15 15) 15)
+    (list (list 55 55 55 55 15 15 15 55) 15)
+    (list (list 15 55 55 55 55 55 15 15) 15)
+    (list (list 15 55 55 55 55 55 15 15) 15)
+    (list (list 15 15 15 55 55 55 15 15) 15)
+    (list (list 15 15 15 15 55 15 15 15) 15)
+    (list (list 15 55 55 55 55 15 15 15) 15)
+    (list (list 15 15 55 55 55 55 15 15) 15)
+    (list (list 15 15 55 55 55 15 15 15) 15)
+  )
 
   ; Choose which ruleset to use based on the dropdown
   let chosenRuleset Nobody
@@ -160,7 +238,13 @@ to plant-material
       set chosenRuleset convert-ruleset-to-symmetric parachartergus-ruleset
     ]
     ruleSet = "mosiac-ruleset" [
-      set chosenRuleset convert-ruleset-to-symmetric mosiac-ruleset
+      set chosenRuleset mosiac-ruleset
+    ]
+    ruleSet = "poppy-field-ruleset" [
+      set chosenRuleset convert-ruleset-to-symmetric poppy-field-ruleset
+    ]
+    ruleSet = "lakes-ruleset" [
+      set chosenRuleset convert-ruleset-to-symmetric lakes-ruleset
     ]
     ;; elsecommands
     [
@@ -169,16 +253,7 @@ to plant-material
 
   ;; Iterate through the ruleset and look for a matching neighbors configuration
   ask wasps [
-    ;; Get neighbors of the wasp
-    let neighbor0 [pcolor] of patch-at 0 1
-    let neighbor1 [pcolor] of patch-at 1 1
-    let neighbor2 [pcolor] of patch-at 1 0
-    let neighbor3 [pcolor] of patch-at 1 -1
-    let neighbor4 [pcolor] of patch-at 0 -1
-    let neighbor5 [pcolor] of patch-at -1 -1
-    let neighbor6 [pcolor] of patch-at -1 0
-    let neighbor7 [pcolor] of patch-at -1 1
-    let neighborpatches (list neighbor0 neighbor1 neighbor2 neighbor3 neighbor4 neighbor5 neighbor6 neighbor7)
+    let neighborpatches get-nieghbors
 
     ;; Look through all of the of the rules and see if it
     ;; matches my current surroundings
@@ -204,14 +279,6 @@ to plant-material
     ]
   ]
 
-end
-
-;; --------- Finishing Functions -------
-to kill-agents
-  ask turtles
-  [
-    die
-  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -284,7 +351,7 @@ blueDensity
 blueDensity
 0
 5
-0.1
+0.3
 0.1
 1
 NIL
@@ -299,7 +366,7 @@ redDensity
 redDensity
 0
 5
-0.1
+0.3
 0.1
 1
 NIL
@@ -311,7 +378,7 @@ INPUTBOX
 189
 140
 numberOfWasps
-38.0
+100.0
 1
 0
 Number
@@ -323,8 +390,8 @@ CHOOSER
 310
 ruleSet
 ruleSet
-"vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset"
-2
+"vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset" "poppy-field-ruleset" "lakes-ruleset"
+5
 
 TEXTBOX
 43
