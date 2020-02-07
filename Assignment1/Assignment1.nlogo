@@ -75,8 +75,8 @@ to-report get-nieghbors
   let neighbor5 [pcolor] of patch-at -1 -1
   let neighbor6 [pcolor] of patch-at -1 0
   let neighbor7 [pcolor] of patch-at -1 1
-
   let neighborpatches (list neighbor0 neighbor1 neighbor2 neighbor3 neighbor4 neighbor5 neighbor6 neighbor7)
+
   report neighborpatches
 end
 
@@ -366,7 +366,7 @@ redDensity
 redDensity
 0
 5
-0.3
+0.2
 0.1
 1
 NIL
@@ -391,7 +391,7 @@ CHOOSER
 ruleSet
 ruleSet
 "vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset" "sunflower-field-ruleset" "lakes-ruleset"
-0
+5
 
 TEXTBOX
 43
@@ -427,6 +427,9 @@ HORIZONTAL
 5. Click the run button to begin the simulation.
 
 ## Modeling Choices
+I created my own breed of agents called wasps to experiment with using breeds. This wasn't really needed as I only had one agent set but it makes the agent more explicit when reading the code.
+
+The other decision I made was to convert the numbers in the rules sets to patch colour values. For example if material 0 was green, I would replace 0 in the ruleset with 55. This was done to avoid adding extra "if statements" in the code.
 
 ## Mosiac Ruleset
 The mosiac ruleset is inspired by mosiac art. Similiar to mosiac art, you can see that the wasps were able to build a colourful structure using all three materials. I wanted to intertwine the blue and the reds so I made all reds build horizontally and blues build vertical. The final touches are the yellow lines that are sprinkled throughout the nest.
@@ -435,7 +438,7 @@ The mosiac ruleset is inspired by mosiac art. Similiar to mosiac art, you can se
 The Sunflower Field ruleset builds exactly what you think it does, a sunflower field. It builds a nest that is very sparse and scatters the yellow materials evenly throughout the whole field. I came across this structure when I was attempting to build a snowflake and when I was three rules in, I ran the code and got this cool looking wasp nest appeared so I just left it.
 
 ## Lakes Ruleset
-The lakes ruleset builds very dense structures around the blue materials which reminds me of a lake. To get the best results out of this ruleset use 0.3 density on the red and blue material and 0 on the yellow. It builds mazes using the red material which will allow the wasps to maneuver and builds very dense blue areas which could be the swimming pool for wasps.
+The lakes ruleset builds very dense structures around the blue materials which reminds me of a lake. To get the best results out of this ruleset use 0.2 density on the red, 0.3 on blue material, and 0 on the yellow. It builds mazes using the red material which will allow the wasps to maneuver and builds very dense blue areas which could be the swimming pool for wasps.
 @#$#@#$#@
 default
 true
