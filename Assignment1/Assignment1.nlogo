@@ -391,7 +391,7 @@ CHOOSER
 ruleSet
 ruleSet
 "vespa-ruleset" "vespula-ruleset" "parachartergus-ruleset" "mosiac-ruleset" "sunflower-field-ruleset" "lakes-ruleset"
-5
+0
 
 TEXTBOX
 43
