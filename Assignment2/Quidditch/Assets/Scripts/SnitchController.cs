@@ -11,8 +11,6 @@ public class SnitchController : MonoBehaviour
 
     public float speed;
     public Rigidbody rb;
-    float moveHorizontal;
-    float moveVertical;
 
     void Start()
     {
@@ -21,17 +19,10 @@ public class SnitchController : MonoBehaviour
 
     void FixedUpdate()
     {
-        moveHorizontal = Input.GetAxis("Horizontal");
-        moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
         rb.AddForce(movement * speed);
     }
-
-    //Add logic to make it collide on walls
-    //void OnTriggerExit(Collider other)
-    //{
-    //    this.transform.Translate(Vector3.right * -moveHorizontal);
-    //    this.transform.Translate(Vector3.forward * -moveVertical);
-    //}
 }
