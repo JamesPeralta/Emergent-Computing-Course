@@ -31,6 +31,20 @@ public class SnitchController : MonoBehaviour
         rb.position = Vector3.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        Respawn();
+    }
+
+    void Respawn()
+    {
+        float x = Random.Range(-49, 49);
+        float y = Random.Range(1, 49);
+        float z = Random.Range(-49, 49);
+
+        transform.position = new Vector3(x, y, z);
+    }
+
     // AI Functions
     void GetNewRandomPosition()
     {
