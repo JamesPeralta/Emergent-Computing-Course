@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SnitchController : MonoBehaviour
 {
-    private CharacterController controller;
-    private float baseSpeed = 1000.0f;
-    private float rotSpeedX = 3.0f;
-    private float rotSpeedY = 1.5f;
-
-    public float speed;
+    // Object components
     public Rigidbody rb;
+    public NavMeshAgent agent;
+
+    // Magic numbers
+    public float speed;
+    public float distanceToDest;
+
+    private Vector3 target;
 
     void Start()
     {
@@ -19,11 +22,22 @@ public class SnitchController : MonoBehaviour
 
     void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        float dist = Vector3.Distance(rb.position, target);
+        if (dist < distanceToDest)
+        {
+            GetNewRandomPosition();
+        }
 
-        // Middle is y force
-        Vector3 movement = new Vector3(moveHorizontal, 1.0f, moveVertical);
-        rb.AddForce(movement * speed);
+        rb.position = Vector3.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
+    }
+
+    // AI Functions
+    void GetNewRandomPosition()
+    {
+        float x = Random.Range(-49, 49);
+        float y = Random.Range(1, 49);
+        float z = Random.Range(-49, 49);
+
+        target = new Vector3(x, y, z);
     }
 }
