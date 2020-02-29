@@ -8,6 +8,7 @@ public class SnitchController : MonoBehaviour
     // Object components
     public Rigidbody rb;
     public NavMeshAgent agent;
+    public ScoreUpdate score;
 
     // Magic numbers
     public float speed;
@@ -34,6 +35,15 @@ public class SnitchController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         Respawn();
+
+        if (collision.gameObject.tag == "Slytherin")
+        {
+            score.SlytherinPoint();
+        }
+        else
+        {
+            score.GryffindorPoint();
+        }
     }
 
     void Respawn()
