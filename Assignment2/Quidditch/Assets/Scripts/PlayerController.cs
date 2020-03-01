@@ -32,12 +32,19 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        // If they bump into another player
         if (collision.gameObject.tag == "Gryffindor" || collision.gameObject.tag == "Slytherin")
         {
             if (collision.gameObject.tag != this.tag)
             {
-                collision.gameObject.GetComponent<PlayerController>().tackled();
+                collision.gameObject.GetComponent<PlayerController>().Tackled();
             }
+        }
+
+        // If they bump onto the ground
+        if (collision.gameObject.name == "Ground")
+        {
+            HitGround();
         }
     }
 
@@ -49,11 +56,20 @@ public class PlayerController : MonoBehaviour
         return pos;
     }
 
-    public void tackled()
+    public void Tackled()
     {
         this.rb.position = Vector3.MoveTowards(rb.position, rb.position, speed * Time.fixedDeltaTime);
         this.rb.useGravity = true;
         this.alive = false;
         this.falling = true;
+    }
+
+    public void HitGround()
+    {
+        // this line is for users who accidently hit the ground
+        this.Tackled();
+
+        // Kills the game object in 2 seconds after loading the object
+        Destroy(this.gameObject, 2);
     }
 }
