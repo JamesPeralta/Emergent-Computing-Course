@@ -28,10 +28,10 @@ public class SnitchController : MonoBehaviour
         {
             GetNewRandomPosition();
         }
-
         rb.position = Vector3.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
     }
 
+    // Event function when interacting with other game objects
     void OnCollisionEnter(Collision collision)
     {
         Respawn();
@@ -44,6 +44,11 @@ public class SnitchController : MonoBehaviour
         {
             score.GryffindorPoint();
         }
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        Debug.Log(collision.gameObject.name);
     }
 
     void Respawn()

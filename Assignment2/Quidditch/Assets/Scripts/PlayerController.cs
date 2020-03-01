@@ -13,11 +13,15 @@ public class PlayerController : MonoBehaviour
     private bool falling;
     private bool alive;
 
-    void Start()
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
         falling = false;
         alive = true;
+    }
+
+    void Start()
+    {
+        rb = this.GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
@@ -42,7 +46,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // If they bump onto the ground
-        if (collision.gameObject.name == "Ground")
+        if (collision.gameObject.name == "Ground" && this.alive == false)
         {
             HitGround();
         }
