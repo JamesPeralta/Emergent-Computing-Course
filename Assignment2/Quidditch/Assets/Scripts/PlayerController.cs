@@ -29,8 +29,8 @@ public class PlayerController : MonoBehaviour
         Vector3 target = LocateGoldenSnitch();
         if (falling == false)
         {
-            rb.position = Vector3.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
             transform.LookAt(target);
+            rb.position = Vector3.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
         }
     }
 
