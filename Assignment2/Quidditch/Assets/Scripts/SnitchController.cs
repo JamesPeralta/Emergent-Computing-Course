@@ -20,7 +20,7 @@ public class SnitchController : MonoBehaviour
 
     // Instance Variables
     private bool runningFromWall;
-    private const int TOP = 100;
+    private const int TOP = 150;
     private const int BOUNDARIES = 100;
 
     private void Awake()
@@ -43,14 +43,13 @@ public class SnitchController : MonoBehaviour
             GetNewRandomPosition();
         }
 
-        Vector3 dir = target - transform.position;
+        Vector3 dir = (target - transform.position).normalized;
         dir += urgeAwayFromBoundaries();
-        dir = dir.normalized;
-        rb.AddForce(dir * acceleration);
+        rb.AddForce(dir * acceleration * 2);
 
         urgeAwayFromBoundaries();
 
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed);
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed * 2);
     }
 
     // Event function when interacting with other game objects
@@ -77,7 +76,6 @@ public class SnitchController : MonoBehaviour
         transform.position = new Vector3(x, y, z);
     }
 
-    // AI Functions
     void GetNewRandomPosition()
     {
         float x = Random.Range(-BOUNDARIES, BOUNDARIES);

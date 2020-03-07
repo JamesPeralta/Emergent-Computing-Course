@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,29 +10,59 @@ public class PlayerController : MonoBehaviour
     public Rigidbody rb;
 
     // Magic numbers
-    public float speed;
+    public int speed;
+    public int acceleration;
+    public float tacklingProb;
 
     private bool falling;
-    private bool alive;
+    private System.Random rnd;
 
     private void Awake()
     {
         falling = false;
-        alive = true;
+        rnd = new System.Random();
     }
 
     void Start()
     {
         rb = this.GetComponent<Rigidbody>();
+        this.rb.velocity = Vector3.zero;
+        this.rb.angularVelocity = Vector3.zero;
+        rb.freezeRotation = true;
     }
 
     void FixedUpdate()
     {
         Vector3 target = LocateGoldenSnitch();
+        transform.LookAt(target);
         if (falling == false)
         {
-            transform.LookAt(target);
-            rb.position = Vector3.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
+            Vector3 urges = new Vector3(0, 0, 0);
+            // Urge towards Golden Snitch
+            Vector3 urgeToSnitch = (LocateGoldenSnitch() - transform.position).normalized;
+
+            // Urge to swarm
+            GameObject[] allSlytherinPlayers = GameObject.FindGameObjectsWithTag("Slytherin"); //Get Slytherin
+            GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
+            GameObject[] allPlayers = allSlytherinPlayers.Concat(allGryffindorPlayers).ToArray();
+
+            // Get urge to swarm
+            GameObject closestPlayer = GetClosestPlayer(allPlayers);
+            Vector3 urgeToSwarm = (closestPlayer.transform.position - transform.position).normalized;
+
+            // Urge away if too close
+            float dist = Vector3.Distance(closestPlayer.transform.position, transform.position);
+            if (dist < 10)
+            {
+                urgeToSwarm *= -1f;
+            }
+
+            urges += urgeToSnitch;
+            urges += urgeToSwarm;
+
+            // Apply the force
+            rb.AddForce(urges * acceleration * 2);
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed * 2);
         }
     }
 
@@ -41,14 +73,17 @@ public class PlayerController : MonoBehaviour
         {
             if (collision.gameObject.tag != this.tag)
             {
-                collision.gameObject.GetComponent<PlayerController>().Tackled();
+                if (rnd.NextDouble() < tacklingProb)
+                {
+                    collision.gameObject.GetComponent<PlayerController>().Tackled();
+                }
             }
         }
 
         // If they bump onto the ground
-        if (collision.gameObject.name == "Ground" && this.alive == false)
+        if (collision.gameObject.name == "Ground")
         {
-            HitGround();
+            Destroy(this.gameObject);
         }
     }
 
@@ -62,18 +97,43 @@ public class PlayerController : MonoBehaviour
 
     public void Tackled()
     {
-        this.rb.position = Vector3.MoveTowards(rb.position, rb.position, speed * Time.fixedDeltaTime);
+        this.rb.velocity = Vector3.zero;
+        this.rb.angularVelocity = Vector3.zero;
         this.rb.useGravity = true;
-        this.alive = false;
         this.falling = true;
     }
 
-    public void HitGround()
+    public GameObject GetClosestPlayer(GameObject[] players)
     {
-        // this line is for users who accidently hit the ground
-        this.Tackled();
+        GameObject tMin = null;
+        float minDist = Mathf.Infinity;
+        Vector3 currentPos = transform.position;
+        foreach (GameObject t in players)
+        {
+            float dist = Vector3.Distance(t.transform.position, currentPos);
+            if (dist < minDist && t != this.gameObject)
+            {
+                tMin = t;
+                minDist = dist;
+            }
+        }
+        return tMin;
+    }
 
-        // Kills the game object in 2 seconds after loading the object
-        Destroy(this.gameObject, 2);
+    public GameObject GetFurthestPlayer(GameObject[] players)
+    {
+        GameObject tMax = null;
+        float maxDist = Mathf.NegativeInfinity;
+        Vector3 currentPos = transform.position;
+        foreach (GameObject t in players)
+        {
+            float dist = Vector3.Distance(t.transform.position, currentPos);
+            if (dist > maxDist)
+            {
+                tMax = t;
+                maxDist = dist;
+            }
+        }
+        return tMax;
     }
 }
