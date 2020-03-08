@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
 
     private bool falling;
     private System.Random rnd;
+    private string sceneName;
 
     private void Awake()
     {
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
         this.rb.velocity = Vector3.zero;
         this.rb.angularVelocity = Vector3.zero;
         rb.freezeRotation = true;
+        sceneName = SceneManager.GetActiveScene().name;
     }
 
     void FixedUpdate()
@@ -38,26 +41,55 @@ public class PlayerController : MonoBehaviour
         // Only do this when the character has not been tackled
         if (falling == false)
         {
-            // Collect all urges
             Vector3 urges = new Vector3(0, 0, 0);
-            Vector3 urgeToSnitch = GetUrgeToSnitch();
-            Vector3 urgeToSwarm = GetUrgeToSwarm();
+            // Collect all normal urges
+            if (sceneName == "Normal_Urges")
+            {
+                // Collect all urges
+                Vector3 urgeToSnitch = GetUrgeToSnitch();
+                Vector3 urgeToAvoidPlayers = GetUrgeToAvoidPlayerCollision();
 
-            float distToSnitch = Vector3.Distance(target, transform.position);
-            // If this player is close to the snitch, only worry about catching it
-            if (distToSnitch < 20)
-            {
+                // Apply urges
+                urges += urgeToAvoidPlayers;
                 urges += urgeToSnitch;
-                rb.AddForce(urges * maxAcceleration * 2);
-                rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 4);
-            }
-            // When the player is not close to the snitch, move towards snitch and also perform swarm urges
-            else 
-            {
-                urges += urgeToSnitch;
-                urges += urgeToSwarm;
+
                 rb.AddForce(urges * maxAcceleration * 2);
                 rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 2);
+            }
+            else
+            {
+                // Collect all urges
+                Vector3 urgeToSnitch = GetUrgeToSnitch();
+                Vector3 urgeToAvoidPlayers = GetUrgeToAvoidPlayerCollision();
+                Vector3 urgeTowardCrowd = GetUrgeTowardCrowd();
+
+                float distToSnitch = Vector3.Distance(target, transform.position);
+                // If this player is close to the snitch, only worry about catching it
+                if (distToSnitch < 20)
+                {
+                    urges += urgeToSnitch;
+                    rb.AddForce(urges * maxAcceleration * 4);
+                    rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 4);
+                }
+                else
+                { 
+                    // Apply urge to swarm or avoid based on proximity
+                    GameObject closestPlayer = GetClosestPlayer();
+                    float dist = Vector3.Distance(closestPlayer.transform.position, transform.position);
+                    if (dist < 10)
+                    {
+                        urges += urgeToAvoidPlayers;
+                    }
+                    else
+                    {
+                        urges += urgeTowardCrowd;
+                    }
+                    urges += urgeToSnitch;
+
+                    rb.AddForce(urges * maxAcceleration * 2);
+                    rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 2);
+                }
+
             }
         }
     }
@@ -103,25 +135,28 @@ public class PlayerController : MonoBehaviour
         return urgeToSnitch;
     }
 
-    Vector3 GetUrgeToSwarm()
+    Vector3 GetUrgeTowardCrowd()
     {
-        // Urge to swarm
-        GameObject[] allSlytherinPlayers = GameObject.FindGameObjectsWithTag("Slytherin"); //Get Slytherin
-        GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
-        GameObject[] allPlayers = allSlytherinPlayers.Concat(allGryffindorPlayers).ToArray();
+        GameObject closestPlayer = GetClosestPlayer();
+        Vector3 urgeToCrowd = (closestPlayer.transform.position - transform.position).normalized;
 
+        return urgeToCrowd;
+    }
+
+    Vector3 GetUrgeToAvoidPlayerCollision()
+    {
         // Get urge to swarm
-        GameObject closestPlayer = GetClosestPlayer(allPlayers);
-        Vector3 urgeToSwarm = (closestPlayer.transform.position - transform.position).normalized;
+        GameObject closestPlayer = GetClosestPlayer();
 
         // Urge away from player if too close to avoid frequent collisions
+        Vector3 urgeToAvoidCollision = new Vector3(0, 0, 0);
         float dist = Vector3.Distance(closestPlayer.transform.position, transform.position);
         if (dist < 10)
         {
-            urgeToSwarm *= -1f;
+            urgeToAvoidCollision = (closestPlayer.transform.position - transform.position).normalized * -1f;
         }
 
-        return urgeToSwarm;
+        return urgeToAvoidCollision;
     }
 
     // Helper functions
@@ -138,12 +173,17 @@ public class PlayerController : MonoBehaviour
         this.falling = true;
     }
 
-    public GameObject GetClosestPlayer(GameObject[] players)
+    public GameObject GetClosestPlayer()
     {
+        // Urge to swarm
+        GameObject[] allSlytherinPlayers = GameObject.FindGameObjectsWithTag("Slytherin"); //Get Slytherin
+        GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
+        GameObject[] allPlayers = allSlytherinPlayers.Concat(allGryffindorPlayers).ToArray();
+
         GameObject tMin = null;
         float minDist = Mathf.Infinity;
         Vector3 currentPos = transform.position;
-        foreach (GameObject t in players)
+        foreach (GameObject t in allPlayers)
         {
             float dist = Vector3.Distance(t.transform.position, currentPos);
             if (dist < minDist && t != this.gameObject)

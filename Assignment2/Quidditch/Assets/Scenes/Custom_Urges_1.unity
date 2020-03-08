@@ -1091,15 +1091,5 @@ PrefabInstance:
       propertyPath: score
       value: 
       objectReference: {fileID: 62748718}
-    - target: {fileID: 4025491281517432157, guid: d37485234dd1d4fca9e28aa1fe2eaceb,
-        type: 3}
-      propertyPath: maxVelocity
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 4025491281517432157, guid: d37485234dd1d4fca9e28aa1fe2eaceb,
-        type: 3}
-      propertyPath: maxAcceleration
-      value: 20
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d37485234dd1d4fca9e28aa1fe2eaceb, type: 3}

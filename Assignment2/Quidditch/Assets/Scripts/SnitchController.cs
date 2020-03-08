@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class SnitchController : MonoBehaviour
 {
@@ -20,26 +21,42 @@ public class SnitchController : MonoBehaviour
     // Magic numbers
     private const int TOP = 150;
     private const int BOUNDARIES = 100;
+    private string sceneName;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         GetNewRandomPosition();
+        sceneName = SceneManager.GetActiveScene().name;
     }
 
     void FixedUpdate()
     {
-        // Collect all urges
         Vector3 urges = new Vector3(0, 0, 0);
-        Vector3 urgeToMoveRandom = UrgeToMoveRandom();
-        Vector3 urgeFromBoundaries = UrgeAwayFromBoundaries();
-        Vector3 urgeToRun = UrgeToMoveAwayFromPlayers();
 
-        // Add all urges
-        urges += urgeToMoveRandom;
-        urges += urgeFromBoundaries;
-        urges += urgeToRun;
+        // Collect all normal urges
+        if (sceneName == "Normal_Urges")
+        {
+            Vector3 urgeToMoveRandom = UrgeToMoveRandom();
+            Vector3 urgeFromBoundaries = UrgeAwayFromBoundaries();
+
+            // Add all urges
+            urges += urgeToMoveRandom;
+            urges += urgeFromBoundaries;
+        }
+        // In my custom urges I have an extra urge to avoid players
+        else
+        {
+            Vector3 urgeToMoveRandom = UrgeToMoveRandom();
+            Vector3 urgeFromBoundaries = UrgeAwayFromBoundaries();
+            Vector3 urgeToRun = UrgeToMoveAwayFromPlayers();
+
+            // Add all urges
+            urges += urgeToMoveRandom;
+            urges += urgeFromBoundaries;
+            urges += urgeToRun;
+        } 
 
         // Apply forces
         rb.AddForce(urges * maxAcceleration * 2);
@@ -67,9 +84,14 @@ public class SnitchController : MonoBehaviour
         GameObject[] allSlytherinPlayers = GameObject.FindGameObjectsWithTag("Slytherin"); //Get Slytherin
         GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
         GameObject[] allPlayers = allSlytherinPlayers.Concat(allGryffindorPlayers).ToArray();
-        GameObject closestPlayer = GetClosestPlayer(allPlayers);
 
-        Vector3 urgeToRun = (closestPlayer.transform.position - transform.position).normalized * -1;
+        Vector3 urgeToRun = new Vector3(0, 0, 0);
+        if (allPlayers.Length > 0)
+        {
+            GameObject closestPlayer = GetClosestPlayer(allPlayers);
+
+            urgeToRun = (closestPlayer.transform.position - transform.position).normalized * -1;
+        }
 
         return urgeToRun;
     }
