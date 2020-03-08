@@ -57,12 +57,28 @@ public class PlayerController : MonoBehaviour
                 urgeToSwarm *= -1f;
             }
 
-            urges += urgeToSnitch;
-            urges += urgeToSwarm;
+            float distToSnitch = Vector3.Distance(LocateGoldenSnitch(), transform.position);
+            if (distToSnitch < 10)
+            {
+                urges += urgeToSnitch;
 
-            // Apply the force
-            rb.AddForce(urges * acceleration * 2);
-            rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed * 2);
+                // Apply the force
+                rb.AddForce(urges * acceleration * 2);
+
+                // Can get up to 2 times the speed when close to the snitch
+                rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed * 4);
+            }
+            // When the player is not close to the snitch
+            else 
+            {
+                urges += urgeToSnitch;
+                urges += urgeToSwarm;
+
+                // Apply the force
+                rb.AddForce(urges * acceleration * 2);
+
+                rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed * 2);
+            }
         }
     }
 
@@ -118,22 +134,5 @@ public class PlayerController : MonoBehaviour
             }
         }
         return tMin;
-    }
-
-    public GameObject GetFurthestPlayer(GameObject[] players)
-    {
-        GameObject tMax = null;
-        float maxDist = Mathf.NegativeInfinity;
-        Vector3 currentPos = transform.position;
-        foreach (GameObject t in players)
-        {
-            float dist = Vector3.Distance(t.transform.position, currentPos);
-            if (dist > maxDist)
-            {
-                tMax = t;
-                maxDist = dist;
-            }
-        }
-        return tMax;
     }
 }

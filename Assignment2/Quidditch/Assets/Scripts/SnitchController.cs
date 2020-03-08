@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
 
 public class SnitchController : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class SnitchController : MonoBehaviour
 
     void FixedUpdate()
     {
+        Vector3 urges = new Vector3(0, 0, 0);
+
         float dist = Vector3.Distance(rb.position, target);
         if (dist < distanceToDest)
         {
@@ -43,11 +46,25 @@ public class SnitchController : MonoBehaviour
             GetNewRandomPosition();
         }
 
-        Vector3 dir = (target - transform.position).normalized;
-        dir += urgeAwayFromBoundaries();
-        rb.AddForce(dir * acceleration * 2);
+        // Urge towards the Golden Snitch
+        Vector3 urgeToMoveRandom = (target - transform.position).normalized;
 
-        urgeAwayFromBoundaries();
+        // Urge away from the boundaries
+        Vector3 urgeFromBoundaries = urgeAwayFromBoundaries();
+
+        // Urge to run from the closest player
+        GameObject[] allSlytherinPlayers = GameObject.FindGameObjectsWithTag("Slytherin"); //Get Slytherin
+        GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
+        GameObject[] allPlayers = allSlytherinPlayers.Concat(allGryffindorPlayers).ToArray();
+        GameObject closestPlayer = GetClosestPlayer(allPlayers);
+        Vector3 urgeToRun = (closestPlayer.transform.position - transform.position).normalized * -1;
+
+        // Add all urges
+        urges += urgeToMoveRandom;
+        urges += urgeFromBoundaries;
+        urges += urgeToRun;
+
+        rb.AddForce(urges * acceleration * 2);
 
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed * 2);
     }
@@ -119,5 +136,22 @@ public class SnitchController : MonoBehaviour
         }
 
         return totalVector;
+    }
+
+    public GameObject GetClosestPlayer(GameObject[] players)
+    {
+        GameObject tMin = null;
+        float minDist = Mathf.Infinity;
+        Vector3 currentPos = transform.position;
+        foreach (GameObject t in players)
+        {
+            float dist = Vector3.Distance(t.transform.position, currentPos);
+            if (dist < minDist && t != this.gameObject)
+            {
+                tMin = t;
+                minDist = dist;
+            }
+        }
+        return tMin;
     }
 }

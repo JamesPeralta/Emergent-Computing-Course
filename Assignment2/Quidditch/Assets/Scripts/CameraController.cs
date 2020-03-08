@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
             pos += 1;
         }
 
-        Vector3 target = LocateGoldenSnitch();
+        Vector3 target = LocateGoldenSnitch(); 
         transform.LookAt(target);
     }
 
