@@ -32,6 +32,12 @@ public class PlayerController : MonoBehaviour
         this.rb.angularVelocity = Vector3.zero;
         rb.freezeRotation = true;
         sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName == "Custom_Urges_2")
+        {
+            maxAcceleration = 16;
+            maxVelocity = 16;
+        }
     }
 
     void FixedUpdate()
@@ -56,7 +62,7 @@ public class PlayerController : MonoBehaviour
                 rb.AddForce(urges * maxAcceleration * 2);
                 rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 2);
             }
-            else
+            else if (sceneName == "Custom_Urges_1")
             {
                 // Collect all urges
                 Vector3 urgeToSnitch = GetUrgeToSnitch();
@@ -89,7 +95,44 @@ public class PlayerController : MonoBehaviour
                     rb.AddForce(urges * maxAcceleration * 2);
                     rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 2);
                 }
+            }
+            else
+            {
+                // Collect all urges
+                Vector3 urgeToSnitch = GetUrgeToSnitch();
+                Vector3 urgeToAvoidPlayers = GetUrgeToAvoidPlayerCollision();
+                Vector3 urgeTowardCrowd = GetUrgeTowardCrowd();
 
+
+                float distToSnitch = Vector3.Distance(target, transform.position);
+                // If this player is close to the snitch, only worry about catching it
+                if (distToSnitch < 30)
+                {
+                    urges += urgeToSnitch;
+                    if (this.tag == "Slytherin")
+                    {
+                        urges += GetUrgeToTackleGryffindorPlayer();
+                    }            
+                }
+                else
+                {
+                    urges += urgeToSnitch;
+                    // Apply urge to swarm or avoid based on proximity
+                    GameObject closestPlayer = GetClosestPlayer();
+                    float dist = Vector3.Distance(closestPlayer.transform.position, transform.position);
+                    if (dist < 10)
+                    {
+                        urges += urgeToAvoidPlayers;
+                    }
+                    else
+                    {
+                        urges += urgeTowardCrowd;
+                    }
+
+                }
+
+                rb.AddForce(urges * maxAcceleration * 2);
+                rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 2);
             }
         }
     }
@@ -159,6 +202,14 @@ public class PlayerController : MonoBehaviour
         return urgeToAvoidCollision;
     }
 
+    Vector3 GetUrgeToTackleGryffindorPlayer()
+    {
+        GameObject closestGryffindorPlayer = GetClosestGryffindorPlayer();
+        Vector3 urgeToTackle = (closestGryffindorPlayer.transform.position - transform.position).normalized * 3f;
+
+        return urgeToTackle;
+    }
+
     // Helper functions
     Vector3 LocateGoldenSnitch()
     {
@@ -184,6 +235,25 @@ public class PlayerController : MonoBehaviour
         float minDist = Mathf.Infinity;
         Vector3 currentPos = transform.position;
         foreach (GameObject t in allPlayers)
+        {
+            float dist = Vector3.Distance(t.transform.position, currentPos);
+            if (dist < minDist && t != this.gameObject)
+            {
+                tMin = t;
+                minDist = dist;
+            }
+        }
+        return tMin;
+    }
+
+    public GameObject GetClosestGryffindorPlayer()
+    {
+        GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
+
+        GameObject tMin = null;
+        float minDist = Mathf.Infinity;
+        Vector3 currentPos = transform.position;
+        foreach (GameObject t in allGryffindorPlayers)
         {
             float dist = Vector3.Distance(t.transform.position, currentPos);
             if (dist < minDist && t != this.gameObject)
