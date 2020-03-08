@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 target = LocateGoldenSnitch();
-        transform.LookAt(target);
         // Only do this when the character has not been tackled
         if (falling == false)
         {
@@ -134,6 +133,8 @@ public class PlayerController : MonoBehaviour
                 rb.AddForce(urges * maxAcceleration * 2);
                 rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 2);
             }
+
+            transform.rotation = Quaternion.LookRotation(rb.velocity);
         }
     }
 
