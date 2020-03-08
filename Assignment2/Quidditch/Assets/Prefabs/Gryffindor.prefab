@@ -122,6 +122,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  speed: 16
-  acceleration: 20
+  maxVelocity: 16
+  maxAcceleration: 20
   tacklingProb: 0.3

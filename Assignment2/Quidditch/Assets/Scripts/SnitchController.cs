@@ -9,64 +9,41 @@ public class SnitchController : MonoBehaviour
     // Object components
     public Rigidbody rb;
     public SphereCollider sphereCollider;
-    public NavMeshAgent agent;
     public ScoreUpdate score;
 
-    // Magic numbers
-    public int speed;
-    public int acceleration;
+    // Instance Variables
+    public int maxVelocity;
+    public int maxAcceleration;
     public float distanceToDest;
-
     private Vector3 target;
 
-    // Instance Variables
-    private bool runningFromWall;
+    // Magic numbers
     private const int TOP = 150;
     private const int BOUNDARIES = 100;
-
-    private void Awake()
-    {
-        runningFromWall = false;
-    }
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        GetNewRandomPosition();
     }
 
     void FixedUpdate()
     {
+        // Collect all urges
         Vector3 urges = new Vector3(0, 0, 0);
-
-        float dist = Vector3.Distance(rb.position, target);
-        if (dist < distanceToDest)
-        {
-            Debug.Log("Reached Position");
-            GetNewRandomPosition();
-        }
-
-        // Urge towards the Golden Snitch
-        Vector3 urgeToMoveRandom = (target - transform.position).normalized;
-
-        // Urge away from the boundaries
-        Vector3 urgeFromBoundaries = urgeAwayFromBoundaries();
-
-        // Urge to run from the closest player
-        GameObject[] allSlytherinPlayers = GameObject.FindGameObjectsWithTag("Slytherin"); //Get Slytherin
-        GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
-        GameObject[] allPlayers = allSlytherinPlayers.Concat(allGryffindorPlayers).ToArray();
-        GameObject closestPlayer = GetClosestPlayer(allPlayers);
-        Vector3 urgeToRun = (closestPlayer.transform.position - transform.position).normalized * -1;
+        Vector3 urgeToMoveRandom = UrgeToMoveRandom();
+        Vector3 urgeFromBoundaries = UrgeAwayFromBoundaries();
+        Vector3 urgeToRun = UrgeToMoveAwayFromPlayers();
 
         // Add all urges
         urges += urgeToMoveRandom;
         urges += urgeFromBoundaries;
         urges += urgeToRun;
 
-        rb.AddForce(urges * acceleration * 2);
-
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed * 2);
+        // Apply forces
+        rb.AddForce(urges * maxAcceleration * 2);
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity * 2);
     }
 
     // Event function when interacting with other game objects
@@ -84,25 +61,35 @@ public class SnitchController : MonoBehaviour
         }
     }
 
-    void Respawn()
+    // Urges
+    Vector3 UrgeToMoveAwayFromPlayers()
     {
-        float x = Random.Range(-BOUNDARIES, BOUNDARIES);
-        float y = Random.Range(1, TOP);
-        float z = Random.Range(-BOUNDARIES, BOUNDARIES);
+        GameObject[] allSlytherinPlayers = GameObject.FindGameObjectsWithTag("Slytherin"); //Get Slytherin
+        GameObject[] allGryffindorPlayers = GameObject.FindGameObjectsWithTag("Gryffindor"); //Get Slytherin
+        GameObject[] allPlayers = allSlytherinPlayers.Concat(allGryffindorPlayers).ToArray();
+        GameObject closestPlayer = GetClosestPlayer(allPlayers);
 
-        transform.position = new Vector3(x, y, z);
+        Vector3 urgeToRun = (closestPlayer.transform.position - transform.position).normalized * -1;
+
+        return urgeToRun;
     }
 
-    void GetNewRandomPosition()
+    Vector3 UrgeToMoveRandom()
     {
-        float x = Random.Range(-BOUNDARIES, BOUNDARIES);
-        float y = Random.Range(1, TOP);
-        float z = Random.Range(-BOUNDARIES, BOUNDARIES);
+        float dist = Vector3.Distance(rb.position, target);
+        if (dist < distanceToDest)
+        {
+            Debug.Log("Reached Position");
+            GetNewRandomPosition();
+        }
 
-        target = new Vector3(x, y, z);
+        // Urge towards the Golden Snitch
+        Vector3 urgeToMoveRandom = (target - transform.position).normalized;
+
+        return urgeToMoveRandom;
     }
-
-    Vector3 urgeAwayFromBoundaries()
+    
+    Vector3 UrgeAwayFromBoundaries()
     {
         float x = transform.position.x;
         float y = transform.position.y;
@@ -136,6 +123,24 @@ public class SnitchController : MonoBehaviour
         }
 
         return totalVector;
+    }
+
+    void Respawn()
+    {
+        float x = Random.Range(-BOUNDARIES, BOUNDARIES);
+        float y = Random.Range(1, TOP);
+        float z = Random.Range(-BOUNDARIES, BOUNDARIES);
+
+        transform.position = new Vector3(x, y, z);
+    }
+
+    void GetNewRandomPosition()
+    {
+        float x = Random.Range(-BOUNDARIES, BOUNDARIES);
+        float y = Random.Range(1, TOP);
+        float z = Random.Range(-BOUNDARIES, BOUNDARIES);
+
+        target = new Vector3(x, y, z);
     }
 
     public GameObject GetClosestPlayer(GameObject[] players)
